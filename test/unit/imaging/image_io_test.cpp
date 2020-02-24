@@ -53,6 +53,7 @@ SECTION("readers") {
 
     std::string should_throw;
     boost::optional<std::string> type;
+    using reader_type = std::unique_ptr<mapnik::image_reader>;
     try
     {
         mapnik::image_rgba8 im_og;
@@ -64,17 +65,17 @@ SECTION("readers") {
         should_throw = "./test/data/images/blank.jpg";
         REQUIRE( mapnik::util::exists( should_throw ) );
         type = mapnik::type_from_filename(should_throw);
-        REQUIRE( type );
-        REQUIRE_THROWS(std::unique_ptr<mapnik::image_reader> reader(mapnik::get_image_reader(should_throw,*type)));
+        REQUIRE(*type == "jpeg" );
+        REQUIRE_THROWS(reader_type{mapnik::get_image_reader(should_throw,*type)});
 
         // actually a png so jpeg reader should throw
         should_throw = "./test/data/images/landusepattern.jpg";
         REQUIRE( mapnik::util::exists( should_throw ) );
         type = mapnik::type_from_filename(should_throw);
-        REQUIRE( type );
+        REQUIRE(*type == "jpeg");
         try
         {
-            std::unique_ptr<mapnik::image_reader> reader(mapnik::get_image_reader(should_throw,*type));
+            reader_type reader(mapnik::get_image_reader(should_throw,*type));
             REQUIRE(false);
         }
         catch (std::exception const& ex)
@@ -84,7 +85,7 @@ SECTION("readers") {
 
 #endif
 
-        REQUIRE_THROWS(mapnik::image_rgba8 im(-10,-10)); // should throw rather than overflow
+        REQUIRE_THROWS(mapnik::image_rgba8(-10,-10)); // should throw rather than overflow
 
 #if defined(HAVE_CAIRO)
         mapnik::cairo_surface_ptr image_surface(
@@ -102,30 +103,30 @@ SECTION("readers") {
         should_throw = "./test/data/images/blank.png";
         REQUIRE( mapnik::util::exists( should_throw ) );
         type = mapnik::type_from_filename(should_throw);
-        REQUIRE( type );
-        REQUIRE_THROWS(std::unique_ptr<mapnik::image_reader> reader(mapnik::get_image_reader(should_throw,*type)));
+        REQUIRE( *type == "png" );
+        REQUIRE_THROWS(std::unique_ptr<mapnik::image_reader>(mapnik::get_image_reader(should_throw,*type)));
 
         should_throw = "./test/data/images/xcode-CgBI.png";
         REQUIRE( mapnik::util::exists( should_throw ) );
         type = mapnik::type_from_filename(should_throw);
-        REQUIRE( type );
-        REQUIRE_THROWS(std::unique_ptr<mapnik::image_reader> reader(mapnik::get_image_reader(should_throw,*type)));
+        REQUIRE( *type == "png" );
+        REQUIRE_THROWS(std::unique_ptr<mapnik::image_reader>(mapnik::get_image_reader(should_throw,*type)));
 #endif
 
 #if defined(HAVE_TIFF)
         should_throw = "./test/data/images/blank.tiff";
         REQUIRE( mapnik::util::exists( should_throw ) );
         type = mapnik::type_from_filename(should_throw);
-        REQUIRE( type );
-        REQUIRE_THROWS(std::unique_ptr<mapnik::image_reader> reader(mapnik::get_image_reader(should_throw,*type)));
+        REQUIRE( *type  == "tiff");
+        REQUIRE_THROWS(std::unique_ptr<mapnik::image_reader>(mapnik::get_image_reader(should_throw,*type)));
 #endif
 
 #if defined(HAVE_WEBP)
         should_throw = "./test/data/images/blank.webp";
         REQUIRE( mapnik::util::exists( should_throw ) );
         type = mapnik::type_from_filename(should_throw);
-        REQUIRE( type );
-        REQUIRE_THROWS(std::unique_ptr<mapnik::image_reader> reader(mapnik::get_image_reader(should_throw,*type)));
+        REQUIRE( *type == "webp" );
+        REQUIRE_THROWS(std::unique_ptr<mapnik::image_reader>(mapnik::get_image_reader(should_throw,*type)));
 #endif
     }
     catch (std::exception const & ex)

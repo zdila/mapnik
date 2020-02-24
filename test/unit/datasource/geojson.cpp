@@ -619,12 +619,9 @@ TEST_CASE("geojson") {
                 auto fields = ds->get_descriptor().get_descriptors();
                 mapnik::query query(ds->envelope());
                 auto features = ds->features(query);
-                REQUIRE_THROWS(
-                    auto feature = features->next();
-                    while (feature != nullptr)
-                    {
-                        feature = features->next();
-                    });
+                auto feature = features->next();
+                auto tester = [=](auto feature) {while (feature != nullptr) feature = features->next();};
+                REQUIRE_THROWS(tester(feature));
             }
 
             // cleanup

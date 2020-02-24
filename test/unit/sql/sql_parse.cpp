@@ -1,6 +1,5 @@
-
 #include "catch.hpp"
-
+#include <sstream>
 #include <mapnik/sql_utils.hpp>
 
 TEST_CASE("sql parse") {

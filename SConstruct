@@ -56,7 +56,7 @@ ICU_LIBS_DEFAULT='/usr/'
 
 DEFAULT_CC = "cc"
 DEFAULT_CXX = "c++"
-DEFAULT_CXX14_CXXFLAGS = " -std=c++14 -DU_USING_ICU_NAMESPACE=0"
+DEFAULT_CXX14_CXXFLAGS = " -std=c++17 -DU_USING_ICU_NAMESPACE=0"
 DEFAULT_CXX14_LINKFLAGS = ""
 if sys.platform == 'darwin':
     # homebrew default
@@ -1229,12 +1229,12 @@ int main()
 
 def supports_cxx14(context,silent=False):
     if not silent:
-        context.Message('Checking if compiler (%s) supports -std=c++14 flag... ' % context.env.get('CXX','CXX'))
+        context.Message('Checking if compiler (%s) supports -std=c++17 flag... ' % context.env.get('CXX','CXX'))
     ret, out = context.TryRun("""
 
 int main()
 {
-#if __cplusplus >= 201402L
+#if __cplusplus >= 201703L
     return 0;
 #else
     return -1;
@@ -1600,9 +1600,9 @@ if not preconfigured:
     if env['PRIORITIZE_LINKING']:
         conf.prioritize_paths(silent=True)
 
-    # test for C++14 support, which is required
+    # test for c++17 support, which is required
     if not env['HOST'] and not conf.supports_cxx14():
-        color_print(1,"C++ compiler does not support C++14 standard (-std=c++14), which is required. Please upgrade your compiler")
+        color_print(1,"C++ compiler does not support c++17 standard (-std=c++17), which is required. Please upgrade your compiler")
         Exit(1)
 
     if not env['HOST']:

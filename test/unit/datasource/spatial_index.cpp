@@ -24,6 +24,7 @@
 
 #include <mapnik/quad_tree.hpp>
 #include <mapnik/util/spatial_index.hpp>
+#include <sstream>
 
 TEST_CASE("spatial_index")
 {

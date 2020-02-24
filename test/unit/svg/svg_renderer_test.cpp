@@ -99,7 +99,6 @@ TEST_CASE("SVG renderer") {
 
     SECTION("SVG octocat inline/css")
     {
-        double scale_factor = 1.0;
         std::string octocat_inline("./test/data/svg/octocat.svg");
         std::string octocat_css("./test/data/svg/octocat-css.svg");
         auto image1 = render_svg(octocat_inline, 1.0);

@@ -1,10 +1,10 @@
-
 #if defined(HAVE_WEBP)
 
 #include "catch.hpp"
 
 #include <mapnik/image_view.hpp>
 #include <mapnik/webp_io.hpp>
+#include <sstream>
 
 TEST_CASE("webp io") {
 
