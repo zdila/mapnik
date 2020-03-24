@@ -122,6 +122,13 @@ struct evaluate
         return ! (util::apply_visitor(*this,x.expr).to_bool());
     }
 
+    value_type operator() (ternary_node<tags::if_then_else> const& x) const
+    {
+        return util::apply_visitor(*this,x.left).to_bool()
+            ? util::apply_visitor(*this,x.middle)
+            : util::apply_visitor(*this,x.right);
+    }
+
     value_type operator() (regex_match_node const& x) const
     {
         value_type v = util::apply_visitor(*this, x.expr);

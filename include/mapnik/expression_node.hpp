@@ -91,6 +91,26 @@ struct binary_node
     expr_node left,right;
 };
 
+template <typename Tag>
+struct ternary_node
+{
+    ternary_node(expr_node && a, expr_node && b, expr_node && c)
+        : left(std::move(a)),
+          middle(std::move(b)),
+          right(std::move(c)) {}
+
+    ternary_node(expr_node const& a, expr_node const& b, expr_node const& c)
+        : left(a),
+          middle(b),
+          right(c) {}
+
+    static const char* type()
+    {
+        return Tag::str();
+    }
+    expr_node left,middle,right;
+};
+
 struct unary_function_call
 {
     using argument_type = expr_node;

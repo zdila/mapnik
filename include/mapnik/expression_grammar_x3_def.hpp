@@ -114,6 +114,14 @@ namespace mapnik { namespace grammar {
         _val(ctx) = std::move(mapnik::binary_node<mapnik::tags::plus>(std::move(_val(ctx)), std::move(_attr(ctx))));
     };
 
+    auto do_if_then_else = [] (auto const& ctx)
+    {
+        // auto const& pair = _attr(ctx);
+        // auto const& a = std::get<0>(pair);
+        // auto const& b = std::get<1>(pair);
+        _val(ctx) = std::move(mapnik::ternary_node<mapnik::tags::if_then_else>(std::move(_val(ctx)), std::move(_attr(ctx)), std::move(_attr(ctx))));
+    };
+
     auto do_subt = [] (auto const& ctx)
     {
         _val(ctx) = std::move(mapnik::binary_node<mapnik::tags::minus>(std::move(_val(ctx)), std::move(_attr(ctx))));
@@ -315,6 +323,7 @@ namespace mapnik { namespace grammar {
     x3::rule<class primary_expression, mapnik::expr_node> const primary_expression("primary expression");
     x3::rule<class regex_match_expression, std::string> const regex_match_expression("regex match expression");
     x3::rule<class regex_replace_expression, std::pair<std::string,std::string> > const regex_replace_expression("regex replace expression");
+    x3::rule<class if_then_else_expression, mapnik::expr_node> const if_then_else_expression("if then else expression");
 
     // strings
     auto const single_quoted_string = x3::rule<class single_quoted_string, std::string> {} = lit('\'')
@@ -336,7 +345,14 @@ namespace mapnik { namespace grammar {
     auto const unquoted_ustring = x3::rule<class ustring, std::string> {} = no_skip[alpha > *alnum] - lit("not");
 
     // start
-    auto const expression_def = logical_expression [do_assign]
+    // auto const expression_def = logical_expression [do_assign]
+    //     ;
+
+    auto const expression_def = if_then_else_expression [do_if_then_else]
+        ;
+
+    auto const if_then_else_expression_def =
+        logical_expression [do_assign] > -('?' > expression > ':' > expression)
         ;
 
     auto const logical_expression_def = not_expression[do_assign] >
@@ -433,6 +449,7 @@ namespace mapnik { namespace grammar {
 
     BOOST_SPIRIT_DEFINE (
         expression,
+        if_then_else_expression,
         logical_expression,
         not_expression,
         conditional_expression,
